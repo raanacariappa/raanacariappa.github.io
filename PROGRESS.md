@@ -131,3 +131,36 @@
   full-screen menu — all dark cinematic. Committed `1b1372a`, pushed, Pages rebuilt.
 - **Note:** intro loader + many autoplay videos can make the preview screenshot tool wait on "idle" —
   retry once if it times out (not a real error).
+
+## 2026-06-23 — pre-launch: Apps section + council review + security hardening
+- **Added an Apps section** (`Apps.tsx`, nav id `apps`, between Experience and OnTrack): **F4 Car Health**
+  + **F4 Performance** (the F4 Trackside Tools suite), described factually as "in development". Window-
+  chrome card motif. Renumbered eyebrows (Apps 03, Research 04, Gallery 05). New `apps[]` in content.ts.
+- **Summoned a 4-agent review council** (content/over-claims · React bugs · security · responsive) +
+  fixed every CRITICAL/HIGH finding:
+  - **Over-claims:** "3 continents" → "5 countries of trackside operations" (only 2 continents was
+    defensible); F4 Car Health blurb "chief-engineer sign-off PDF" (not yet built) → "themed PDF health
+    reports" (which is built). Kept "Race & Data Engineer" (defensible — held Data Engineer titles).
+  - **Responsive (was CRITICAL):** Experience bullets were `hidden ... sm:grid` → on phones each 90svh
+    panel was near-empty; now `grid grid-cols-1 sm:grid-cols-2` (verified `display:grid` ×5 at 375px).
+    Hero name clamp `13vw`→`11.5vw` (was clipping at ~360px; now 335px fits 345px). AutoScroll button
+    `hidden sm:flex` (was covering footer taps on mobile). Watermark `pointer-events-none`. Nav menu
+    `overflow-y-auto`. Gallery `grid-flow-dense`. Verified at 375px: overflowX = 0.
+  - **Code/a11y:** Footer year → module const (hydration); Gallery lightbox Esc-to-close + focus +
+    `role=dialog`/`aria-modal`; Nav `type=button` + hamburger `aria-label`/`aria-expanded`.
+- **Security hardening (public launch):**
+  - CSP + `X-Content-Type-Options: nosniff` meta in `layout.tsx` `<head>` — **confirmed emitted in
+    static `out/index.html` and the live HTML** (enforced at parse time). `FrameGuard.tsx` JS anti-
+    clickjack fallback (GitHub Pages can't set X-Frame-Options headers).
+  - **Scrubbed the phone number from git history** — it lingered in 2 early public commits
+    (`adfc78a`/`34bf7c1`). Squashed the whole repo to ONE clean commit (`de55f38`), force-pushed,
+    expired reflog + `gc --prune=now`. Phone now = 0 in local history, remote tree, and live page.
+  - Council confirmed: no secrets, no XSS sinks, all `target=_blank` have `rel=noopener`, PII =
+    email + LinkedIn only. Next 14.2.18 CVEs are all server-runtime → N/A to a static export.
+- **THREAT MODEL (tell Raana):** a static GitHub Pages site can't be "hacked" — no server, DB, login,
+  or input. The only way to alter the page is to compromise her **GitHub account** → the one real action
+  is **enable GitHub 2FA** (+ strong password). Visitors can only look.
+- **Verified live:** build ✓, Apps section live, phone=0, CSP meta present, "5 countries" live, no
+  horizontal overflow desktop+mobile. Deployed `de55f38`.
+- **Open / next:** add the live URL to CV + LinkedIn; optional: OG preview image + favicon; make the
+  intro loader fire once per session; bump Next off 14.2.18 as hygiene.
